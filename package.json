@@ -1,0 +1,11 @@
+{
+  "name": "bennettm-fsjs-sprint1",
+  "version": "1.0.0",
+  "description": "FullStack JavaScript Sprint One",
+  "main": "myapp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Bennett",
+  "license": "CC0-1.0"
+}
