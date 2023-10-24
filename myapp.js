@@ -29,9 +29,11 @@ switch (myArgs[0]) {
     case 'help':
     case 'h':
     default:
+
         fs.readFile(__dirname + '/usage.txt', 'utf8', (error, data) => {
             if (error) console.error(error);
             console.log(data);
+
         })
 
 }
