@@ -87,11 +87,28 @@ function createFolders() {
 /* --------------------------------------------------- */
 
 function createFiles() {
+    setTimeout(() => { // Log events were being logged out of order sometimes so I added a timeout
     // Logging
     if (DEBUG) console.log('calling init.js --> createFiles()');
     myEmitter.emit('log', 'init.createFiles()', 'INFO', 'Trying to create all files.');
 
     try {
+
+        // Check to see if the views folder exists first, if it doesn't, create it.
+        if (!fs.existsSync(path.join(__dirname, './views'))) {
+            fsPromises.mkdir(path.join(__dirname, './views'))
+        };
+
+        // Use writeFile() to check if usage.txt file exists, if it doesn't it creates it.
+        writeFile('usage.txt', usagetxt);
+        // Use writeFile() to check if init.txt file exists, if it doesn't it creates it.
+        writeFile('init.txt', inittxt);
+        // Use writeFile() to check if config.txt file exists, if it doesn't it creates it.
+        writeFile('config.txt', configtxt);
+        // Use writeFile() to check if token.txt file exists, if it doesn't it creates it.
+        writeFile('token.txt', tokentxt);
+
+        
 
         let configData = JSON.stringify(configjson, null, 2);
 
@@ -115,26 +132,17 @@ function createFiles() {
                 // If no errors, log the success
                 } else {
 
-                    if (DEBUG) console.log('Data written to config.json file.');
-                    myEmitter.emit('log', 'init.createFiles()', 'INFO', 'Data written to config.json file successfully.');
+                    if (DEBUG) console.log('File config.json written successfully');
+                    myEmitter.emit('log', 'init.createFiles()', 'INFO', 'config.json file written successfully');
 
                 }
             })
 
         } else { // Else the config.json file aready exists
 
-            if (DEBUG) console.log('The config.json file already exists.');
-            myEmitter.emit('log', 'init.createFiles()', 'INFO', 'The config.json file already exists.');
+            if (DEBUG) console.log('File config.json already exists.');
+            myEmitter.emit('log', 'init.createFiles()', 'INFO', 'File config.json already exists.');
         }
-
-        // Check to see if the usage.txt file does not already exist
-        writeFile('usage.txt', usagetxt);
-        // Check to see if the init.txt file does not already exist
-        writeFile('init.txt', inittxt);
-        // Check to see if the config.txt file does not already exist
-        writeFile('config.txt', configtxt);
-        // Check to see if the token.txt file does not already exist
-        writeFile('token.txt', tokentxt);
 
 } catch (error) {
     
@@ -142,6 +150,7 @@ function createFiles() {
         console.error(error);
         myEmitter.emit('log', 'init.createFiles()', 'ERROR', error);
 }
+    }, 100);
 }
 
 
@@ -149,27 +158,49 @@ function createFiles() {
 /*                   writeFile()                       */
 /* --------------------------------------------------- */
 
+/* Function that checks if .txt file exists, and if it
+doesn't exist it creates it. It takes two paramaters
+1: fileName, 2: data. The file that it checks for depends
+on the fileName arg given, and it is able to write the file
+using the data arg */
+
+/* --------------------------------------------------- */
 
 
 async function writeFile(fileName, data) {
+
     if (DEBUG) console.log(`Calling init.writeFile(${fileName})`);
+    myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `Calling init.writeFile(${fileName})`)
+
     const filePath = path.join(__dirname, 'views', fileName);
 
     try {
+
         // Check if the file exists
         await fsPromises.access(filePath);
         console.log(`File ${fileName} already exists.`);
-    } catch (error) {
+        myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `File ${fileName} already exists.`)
+
+    } catch (error) { // If theres an error then the file does not exist so we create it
+
         if (error.code === 'ENOENT') {
             // File does not exist, create it
             try {
+
                 await fsPromises.writeFile(filePath, data);
-                console.log(`File ${fileName} created.`);
+                console.log(`File ${fileName} written successfully.`);
+                myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `File ${fileName} created.`)
+
             } catch (writeError) {
+                // If there is an error writing the file, log it
                 console.error(`Error creating file ${fileName}:`, writeError);
+                myEmitter.emit('log', 'init.createFiles().writeFile()', 'ERROR', `Error creating file ${fileName}: ${writeError}`)
             }
+
         } else {
+            // If there is an error accessing the file, log it
             console.error(`Error accessing the file ${fileName}:`, error);
+            myEmitter.emit('log', 'init.createFiles().writeFile()', 'ERROR', `Error accessing the file ${fileName}: ${error}`)
         }
     }
 }
@@ -191,10 +222,11 @@ function initApp() {
         case '--all':
 
             if (DEBUG) console.log(`${myArgs[1]} --> createFolders() and createFiles()`);
+            myEmitter.emit('log', 'init --all', 'INFO', 'Create all folders and files.');
+
             createFolders();
             createFiles();
 
-            myEmitter.emit('log', myArgs, 'INFO', 'Create all folders and files.');
             break;
 
         case '--cat':
@@ -203,7 +235,7 @@ function initApp() {
             myEmitter.emit('log', myArgs, 'INFO', 'Create all files.')
 
             // First call createFolders() to make sure all folders already exist
-            createFolders();
+            // createFolders();
             // Then call createFiles() to create all files
             createFiles();
 
