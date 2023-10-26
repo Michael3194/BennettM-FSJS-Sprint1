@@ -189,7 +189,7 @@ async function writeFile(fileName, data) {
 
                 await fsPromises.writeFile(filePath, data);
                 console.log(`File ${fileName} written successfully.`);
-                myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `File ${fileName} created.`)
+                myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `File ${fileName} written successfully.`)
 
             } catch (writeError) {
                 // If there is an error writing the file, log it
@@ -262,7 +262,8 @@ function initApp() {
                 if (error) {
                     console.log('Error reading init.txt file. Try running init with --all option to create the folders and files first.')
                 } else {
-
+                
+                console.log('node myapp init --help --> Display the init.txt help file.')
                 console.log(data.toString()); // If no errors, display the data from the file
 
                 }
