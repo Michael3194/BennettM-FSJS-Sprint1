@@ -45,7 +45,7 @@ const logEvents = async (event, level, message) => {
             }
         }
 
-        if (DEBUG) console.log(logItem);
+        // if (DEBUG) console.log(logItem);
         
         const fileName = `${format(new Date(), 'MMdd')}` + '_events.log';
 
