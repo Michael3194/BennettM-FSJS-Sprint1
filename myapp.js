@@ -2,6 +2,7 @@ global.DEBUG = true;
 
 const fs = require('fs');
 const { initApp } = require('./init.js');
+const { configApp } = require('./config.js');
 
 const myArgs = process.argv.slice(2);
 
@@ -11,13 +12,13 @@ switch (myArgs[0]) {
 
     case 'init':
     case 'i':
-        if (DEBUG) console.log(myArgs[0], ' --> initialize the app.')
+        if (DEBUG) console.log(myArgs[0], ' --> Initialize the app.')
         initApp();
         break;
 
     case 'config':
     case 'c':
-        if (DEBUG) console.log(myArgs[0], ' --> Display the configuration file: config.json.')
+        if (DEBUG) console.log(myArgs[0], ' --> Configure the app')
         configApp();
         break;
 
