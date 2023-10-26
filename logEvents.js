@@ -1,8 +1,8 @@
 // File Created: 2023-10-22
 
 /* --- NPM Installed Modules --- */
-const {format, getYear} = require('date-fns'); // Used to format the date and time.
-const {v4: uuid} = require('uuid'); // Used to generate a unique ID.
+const { format, getYear } = require('date-fns'); // Used to format the date and time.
+const { v4: uuidv4 } = require('uuid'); // Used to generate a unique ID.
 
 
 /* --- NodeJS Common Core Modules --- */
@@ -50,7 +50,7 @@ const logEvents = async (event, level, message) => {
         const fileName = `${format(new Date(), 'MMdd')}` + '_events.log';
 
         // Write the log entry to the log file.
-        await fsPromises.appendFile(path.join(_dirname, currentFolder, fileName), logItem + '\n');
+        await fsPromises.appendFile(path.join(__dirname, currentFolder, fileName), logItem + '\n');
 
     } catch (error) {
 

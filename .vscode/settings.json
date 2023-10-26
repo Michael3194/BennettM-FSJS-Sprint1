@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+      ".*_events.log$": "log"
+    },
+    "[log]": {
+      "editor.wordWrap": "off"
+    }
+  }
