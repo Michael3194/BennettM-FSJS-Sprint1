@@ -36,6 +36,7 @@ const myArgs = process.argv.slice(2);
 /* --------------------------------------------------- */
 /*     This function displays the config.json file     */
 /* --------------------------------------------------- */
+/* --------------------------------------------------- */
 
 function displayConfig() {
 
@@ -65,6 +66,7 @@ function displayConfig() {
 /* --------------------------------------------------- */
 /*     This function provides the ability to set a     */
 /*  specific config.json property to the value given   */
+/* --------------------------------------------------- */
 /* --------------------------------------------------- */
 
 function setConfig() {
@@ -139,6 +141,7 @@ function setConfig() {
 /*     This function resets the config.json file to    */
 /*                      the default                    */
 /* --------------------------------------------------- */
+/* --------------------------------------------------- */
 
 function resetConfig() {
 
@@ -170,6 +173,7 @@ function resetConfig() {
 /* --------------------------------------------------- */
 /*   This function contains a switch statement that    */
 /*   handles all the possible config command options   */
+/* --------------------------------------------------- */
 /* --------------------------------------------------- */
 
 
