@@ -67,6 +67,47 @@ function tokenCount() {
 } // End of tokenCount()
 
 
+/* --------------------------------------------------- */
+/*                   tokenList()                       */
+/* --------------------------------------------------- */
+/*     This function displays the tokens in the        */
+/*              token.json file.                       */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+
+
+function tokenList() {
+
+    if (DEBUG) console.log('token.tokenList() --> Display the tokens in the token.json file.')
+    myEmitter.emit('log', 'INFO', 'token.tokenList()', '[--list] Display the tokens in the token.json file.');
+
+    // Read the token.json file
+    fsPromises.readFile(path.join(__dirname, 'json/token.json'), 'utf8')
+    .then((data) => {
+
+        // Parse the JSON data
+        const tokenData = JSON.parse(data);
+
+        // Display the tokens
+        console.log('Tokens:');
+
+        tokenData.forEach((token, index) => {
+            console.log(`Token ${index + 1}: ${JSON.stringify(token, null, 2)}`);
+        })
+
+        myEmitter.emit('log', 'INFO', 'token.tokenList()', 'Tokens displayed in the console successfully.');
+
+
+    })
+
+    .catch((error) => {
+        
+        console.error(error);
+        myEmitter.emit('log', 'ERROR', 'token.tokenList()', error);
+    })
+
+}
+
 
 /* --------------------------------------------------- */
 /*                      tokenApp()                     */
