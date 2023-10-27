@@ -104,64 +104,26 @@ function createFiles() {
         /* --------------------------------------------------- */
 
         // Use writeFile() to check if usage.txt file exists, if it doesn't it creates it.
-        writeFile('usage.txt', usagetxt);
+        writeTxtFile('usage.txt', usagetxt);
         // Use writeFile() to check if init.txt file exists, if it doesn't it creates it.
-        writeFile('init.txt', inittxt);
+        writeTxtFile('init.txt', inittxt);
         // Use writeFile() to check if config.txt file exists, if it doesn't it creates it.
-        writeFile('config.txt', configtxt);
+        writeTxtFile('config.txt', configtxt);
         // Use writeFile() to check if token.txt file exists, if it doesn't it creates it.
-        writeFile('token.txt', tokentxt);
+        writeTxtFile('token.txt', tokentxt);
 
         
         /* --------------------------------------------------- */
         /*               Create config.json file               */
         /* --------------------------------------------------- */
 
-        let configData = JSON.stringify(configjson, null, 2);
-
-        // Check to see if the config.json file does not already exist
-        if (!fs.existsSync(path.join(__dirname, './json/config.json'))) {
-
-            // Check to see if the json folder exists first
-            if (!fs.existsSync(path.join(__dirname, './json'))) {
-
-                // If it does not exist, create it
-                fsPromises.mkdir(path.join(__dirname, './json'))
-            }
-
-            fs.writeFile('./json/config.json', configData, (error) => {
-
-                // Deal with any errors
-                if (error) {
-                    console.error(error);
-                    myEmitter.emit('log', 'init.createFiles()', 'ERROR', error);
-                
-                // If no errors, log the success
-                } else {
-
-                    if (DEBUG) console.log('File config.json written successfully');
-                    myEmitter.emit('log', 'init.createFiles()', 'INFO', 'config.json file written successfully');
-
-                }
-            })
-
-        } else { // Else the config.json file aready exists
-
-            if (DEBUG) console.log('File config.json already exists.');
-            myEmitter.emit('log', 'init.createFiles()', 'INFO', 'File config.json already exists.');
-        }
+        writeJsonFile('config.json', configjson)
 
 
         /* --------------------------------------------------- */
         /*               Create token.json file                */
         /* --------------------------------------------------- */
-        let tokenData = JSON.stringify(tokenjson, null, 2);
-
-        // Check to see if the token.json file does not already exist
-        if (!fs.existsSync(path.join(__dirname, '/json/token.json'))) {
-
-            
-        }
+        writeJsonFile('token.json', tokenjson)
 
 
 } catch (error) {
@@ -175,7 +137,7 @@ function createFiles() {
 
 
 /* --------------------------------------------------- */
-/*                   writeFile()                       */
+/*                   writeTxtFile()                       */
 /* --------------------------------------------------- */
 
 /* Function that checks if .txt file exists, and if it
@@ -187,7 +149,7 @@ using the data arg */
 /* --------------------------------------------------- */
 
 
-async function writeFile(fileName, data) {
+async function writeTxtFile(fileName, data) {
 
     if (DEBUG) console.log(`Calling init.writeFile(${fileName})`);
     myEmitter.emit('log', 'init.createFiles().writeFile()', 'INFO', `Calling init.writeFile(${fileName})`)
@@ -223,7 +185,58 @@ async function writeFile(fileName, data) {
             myEmitter.emit('log', 'init.createFiles().writeFile()', 'ERROR', `Error accessing the file ${fileName}: ${error}`)
         }
     }
-}
+} // End of writeTxtFile()
+
+
+
+/* --------------------------------------------------- */
+/*                   writeJsonFile()                   */
+/* --------------------------------------------------- */
+/*   Function that checks if .json file exists, and    */
+/*   if it doesn't exist it creates it. It takes two   */
+/*   paramaters 1: fileName, 2: data. The file that    */
+/*   it checks for depends on the fileName arg given,  */
+/*   and it is able to write the file using the data   */
+/*   arg.                                              */
+/* --------------------------------------------------- */
+
+function writeJsonFile(fileName, data) {
+
+    let filePath = path.join(__dirname, '/json/', fileName)
+    let jsonData = JSON.stringify(data, null, 2)
+
+    // Check to see if the config.json file does not already exist
+    if (!fs.existsSync(filePath)) {
+
+        // Check to see if the json folder exists first
+        if (!fs.existsSync(path.join(__dirname, './json'))) {
+
+            // If it does not exist, create it
+            fsPromises.mkdir(path.join(__dirname, './json'))
+        }
+
+        fs.writeFile('./json/'+ fileName, jsonData, (error) => {
+
+            // Deal with any errors
+            if (error) {
+                console.error(error);
+                myEmitter.emit('log', 'init.createFiles()', 'ERROR', error);
+            
+            // If no errors, log the success
+            } else {
+
+                if (DEBUG) console.log(`${fileName} file written successfully`);
+                myEmitter.emit('log', 'init.createFiles()', 'INFO', `${fileName} file written successfully`);
+
+            }
+        })
+
+    } else { // Else the config.json file aready exists
+
+        if (DEBUG) console.log(`${fileName} file already exists.`);
+        myEmitter.emit('log', 'init.createFiles()', 'INFO', `${fileName} file already exists.`);
+    }
+} // End of writeJsonFile()
 
 
 
