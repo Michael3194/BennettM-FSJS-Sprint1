@@ -127,6 +127,37 @@ function setConfig() {
 
 
 /* --------------------------------------------------- */
+/*                    resetConfig()                    */
+/* --------------------------------------------------- */
+/*     This function resets the config.json file to    */
+/*                      the default                    */
+/* --------------------------------------------------- */
+
+function resetConfig() {
+
+    if (DEBUG) console.log('config.resetConfig()');
+    myEmitter.emit('log', 'config.resetConfig()', 'INFO', ' [--reset] Reset the config.json file to the default.');
+
+    let configData = JSON.stringify(configjson, null, 2); // Convert the object back to a string
+
+    // Write the config.json file
+    fs.writeFile(__dirname + '/json/config.json', configData, (error) => {
+
+        // Handle any errors writing to the config.json file
+        if (error) {
+            if (DEBUG) console.log(`Error writing to config.json file: ${error}`);
+            myEmitter.emit('log', 'config.resetConfig()', 'ERROR', error);
+        } else {
+
+        // Success writing to the config.json file
+        if (DEBUG) console.log('config.json file reset successfully.');
+        myEmitter.emit('log', 'config.resetConfig()', 'INFO', 'config.json file reset successfully.');
+        }
+    })
+}
+
+
+/* --------------------------------------------------- */
 /*                    configApp()                      */
 /* --------------------------------------------------- */
 /*   This function contains a switch statement that    */
@@ -155,7 +186,7 @@ function configApp() {
 
             if (DEBUG) console.log('config.configApp() --> --reset.')
 
-            // resetConfig();
+            resetConfig();
             break;
 
         
