@@ -99,6 +99,10 @@ function createFiles() {
             fsPromises.mkdir(path.join(__dirname, './views'))
         };
 
+        /* --------------------------------------------------- */
+        /*               Create all .txt files                 */
+        /* --------------------------------------------------- */
+
         // Use writeFile() to check if usage.txt file exists, if it doesn't it creates it.
         writeFile('usage.txt', usagetxt);
         // Use writeFile() to check if init.txt file exists, if it doesn't it creates it.
@@ -109,6 +113,9 @@ function createFiles() {
         writeFile('token.txt', tokentxt);
 
         
+        /* --------------------------------------------------- */
+        /*               Create config.json file               */
+        /* --------------------------------------------------- */
 
         let configData = JSON.stringify(configjson, null, 2);
 
@@ -143,6 +150,19 @@ function createFiles() {
             if (DEBUG) console.log('File config.json already exists.');
             myEmitter.emit('log', 'init.createFiles()', 'INFO', 'File config.json already exists.');
         }
+
+
+        /* --------------------------------------------------- */
+        /*               Create token.json file                */
+        /* --------------------------------------------------- */
+        let tokenData = JSON.stringify(tokenjson, null, 2);
+
+        // Check to see if the token.json file does not already exist
+        if (!fs.existsSync(path.join(__dirname, '/json/token.json'))) {
+
+            
+        }
+
 
 } catch (error) {
     
