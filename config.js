@@ -23,11 +23,16 @@ myEmitter.on('log', (event, level, message) => {
     logEvents(event, level, message);
 })
 
-/* --------------------------------------------------- */
-/* --------------------------------------------------- */
 
 // Grab the command line arguments after the first two
 const myArgs = process.argv.slice(2);
+
+
+/* --------------------------------------------------- */
+/*                    displayConfig()                  */
+/* --------------------------------------------------- */
+/*     This function displays the config.json file     */
+/* --------------------------------------------------- */
 
 function displayConfig() {
 
@@ -49,6 +54,86 @@ function displayConfig() {
     myEmitter.emit('log', 'config.displayConfig()', 'INFO', 'config.json file displayed successfully.');
 }
 
+/* --------------------------------------------------- */
+/*                      setConfig()                    */
+/* --------------------------------------------------- */
+/*     This function provides the ability to set a     */
+/*  specific config.json property to the value given   */
+/* --------------------------------------------------- */
+
+function setConfig() {
+
+    if (DEBUG) console.log('config.setConfig()');
+    if (DEBUG) console.log(myArgs);
+    myEmitter.emit('log', 'config.setConfig()', 'INFO', ` [--set] Set config.json "${myArgs[2]}" property to "${myArgs[3]}"`);
+    
+    let match = false; // Set a flag to false
+
+    // Read the config.json file
+    fs.readFile(__dirname + '/json/config.json', 'utf8', (error, data) => {
+
+        if (error) {
+            myEmitter.emit('log', 'config.setConfig()', 'ERROR', error);
+        }
+
+        let config = JSON.parse(data)
+
+        if (DEBUG) console.log(config);
+
+        // Loop through the config.json file object
+        for (let key of Object.keys(config)) {
+
+            if (key === myArgs[2]) {
+                // Match found
+                if (DEBUG) console.log('Match found');
+                if (DEBUG) console.log(`Trying to set config.${key} to "${myArgs[3]}"`)
+
+                myEmitter.emit('log', 'config.setConfig()', 'INFO', 'Match found');
+
+                config[key] = myArgs[3]; // Set the property to the value entered
+                match = true;
+            }
+        }
+
+        if (!match) {
+            // No match found
+            if (DEBUG) console.log(`Invalid config key: ${myArgs[2]} try another key.`);
+            // Emit log event for invalid config key
+            myEmitter.emit('log', 'config.setConfig()', 'ERROR', `Invalid config property: ${myArgs[2]}, try another property.`);
+        }
+
+        if (DEBUG) console.log(config);
+
+        data = JSON.stringify(config, null, 2); // Convert the object back to a string
+
+        if (match) {
+        // Write the config.json file
+        fs.writeFile(__dirname + '/json/config.json', data, (error) => {
+
+            // Error writing to config.json file
+            if (error) { 
+                if (DEBUG) console.log(`Error writing to config.json file: ${error}`);
+                myEmitter.emit('log', 'config.setConfig()', 'ERROR', error);
+            }
+
+            // Success writing to config.json file
+            if (DEBUG) console.log(`config.json "${myArgs[2]}" property set to "${myArgs[3]}" successfully.`);
+            myEmitter.emit('log', 'config.setConfig()', 'INFO', `config.json "${myArgs[2]}" property set to "${myArgs[3]}" successfully.`);
+        })
+        }
+    });
+    
+} // End of setConfig()
+
+
+/* --------------------------------------------------- */
+/*                    configApp()                      */
+/* --------------------------------------------------- */
+/*   This function contains a switch statement that    */
+/*   handles all the possible config command options   */
+/* --------------------------------------------------- */
+
+
 function configApp() {
 
     // if (DEBUG) console.log('config.configApp()');
@@ -57,28 +142,32 @@ function configApp() {
     // Switch statement to handle all config command options
     switch (myArgs[1]) { 
 
-        case '--show':
+        case '--show': // Display the config.json file
+
             if (DEBUG) console.log('config.configApp() --show. ( Display the config.json file ).');
             myEmitter.emit('log', 'config.configApp() --show', 'INFO', 'Display the config.json file.');
 
             displayConfig();
             break;
 
+        
+        case '--reset': // Reset the config.json file to the default
 
-        case '--reset':
             if (DEBUG) console.log('config.configApp() --> --reset.')
 
             // resetConfig();
             break;
 
         
-        case '--set':
+        case '--set': // Set a specific config.json property to the value given
 
             if (DEBUG) console.log('config.configApp() --> --set.');
-            // setConfig();
+
+            setConfig();
             break;
 
 
+        // Display the config.txt file
         case '--help':
         case '--h':
         default:
@@ -86,20 +175,27 @@ function configApp() {
             if (DEBUG) console.log('config.configApp() --> --help.');
             myEmitter.emit('log', 'config.configApp() --help', 'INFO', 'Display the config.txt file.');
             
-            // Display the usage.txt file
+            // Read the config.txt file
             fs.readFile(__dirname + '/views/config.txt', 'utf-8', (error, data) => {
-
-                if (error) { // Handle any errors displaying the config.txt file
+                
+                if (error) { // Handle any errors reading the config.txt file
 
                     console.log(`Error displaying the config.txt file, ${error}`)
                     throw error;
                 }
 
-                console.log(data);
+                // Success reading the config.txt file
+                console.log(data); // Display the config.txt file
                 myEmitter.emit('log', 'config.configApp() --help', 'INFO', 'config.txt file displayed successfully.');
             })
     }
-}
+} // End of configApp()
+
+
+
+/* --------------------------------------------------- */
+/*                    Module exports                   */
+/* --------------------------------------------------- */
 
 module.exports = {
     configApp
