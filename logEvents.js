@@ -10,6 +10,7 @@ const fs = require('fs'); // Used to read and write files.
 const fsPromises = require('fs').promises; // Provides promise based file systems functions.
 const path = require('path'); // Used to work with file and directory paths.
 
+
 const logEvents = async (event, level, message) => {
 
     // Format the date and time to be used in the log file.

@@ -1,5 +1,7 @@
 // File Created: 2023-10-26
 
+
+
 /* --------------------------------------------------- */
 /*              Load all needed modules                */
 /* --------------------------------------------------- */
@@ -28,6 +30,7 @@ myEmitter.on('log', (event, level, message) => {
 const myArgs = process.argv.slice(2);
 
 
+
 /* --------------------------------------------------- */
 /*                    displayConfig()                  */
 /* --------------------------------------------------- */
@@ -52,7 +55,10 @@ function displayConfig() {
     })
 
     myEmitter.emit('log', 'config.displayConfig()', 'INFO', 'config.json file displayed successfully.');
-}
+
+} // End of displayConfig()
+
+
 
 /* --------------------------------------------------- */
 /*                      setConfig()                    */
@@ -126,6 +132,7 @@ function setConfig() {
 } // End of setConfig()
 
 
+
 /* --------------------------------------------------- */
 /*                    resetConfig()                    */
 /* --------------------------------------------------- */
@@ -154,7 +161,8 @@ function resetConfig() {
         myEmitter.emit('log', 'config.resetConfig()', 'INFO', 'config.json file reset successfully.');
         }
     })
-}
+} // End of resetConfig()
+
 
 
 /* --------------------------------------------------- */
