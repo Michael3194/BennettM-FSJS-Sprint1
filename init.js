@@ -83,7 +83,11 @@ function createFolders() {
 
 
 /* --------------------------------------------------- */
-/*                   createFiles() */
+/*                   createFiles()                     */
+/* --------------------------------------------------- */
+/*   Function that calls the writeTxtFile() and        */
+/*   writeJsonFile() functions to create all files.    */
+/* --------------------------------------------------- */
 /* --------------------------------------------------- */
 
 function createFiles() {
@@ -103,26 +107,22 @@ function createFiles() {
         /*               Create all .txt files                 */
         /* --------------------------------------------------- */
 
-        // Use writeFile() to check if usage.txt file exists, if it doesn't it creates it.
+        // Use writeTxtFile() to check if usage.txt file exists, if it doesn't it creates it.
         writeTxtFile('usage.txt', usagetxt);
-        // Use writeFile() to check if init.txt file exists, if it doesn't it creates it.
+        // Use writeTxtFile() to check if init.txt file exists, if it doesn't it creates it.
         writeTxtFile('init.txt', inittxt);
-        // Use writeFile() to check if config.txt file exists, if it doesn't it creates it.
+        // Use writeTxtFile() to check if config.txt file exists, if it doesn't it creates it.
         writeTxtFile('config.txt', configtxt);
-        // Use writeFile() to check if token.txt file exists, if it doesn't it creates it.
+        // Use writeTxtFile() to check if token.txt file exists, if it doesn't it creates it.
         writeTxtFile('token.txt', tokentxt);
 
-        
         /* --------------------------------------------------- */
-        /*               Create config.json file               */
+        /*               Create all .json files                */
         /* --------------------------------------------------- */
 
+        // Write the config.json file
         writeJsonFile('config.json', configjson)
-
-
-        /* --------------------------------------------------- */
-        /*               Create token.json file                */
-        /* --------------------------------------------------- */
+        // Write the token.json file
         writeJsonFile('token.json', tokenjson)
 
 
@@ -137,16 +137,13 @@ function createFiles() {
 
 
 /* --------------------------------------------------- */
-/*                   writeTxtFile()                       */
+/*                   writeTxtFile()                    */
+/* --------------------------------------------------- */
+/*   Function that checks if .txt file exists, and     */
+/*         if it doesn't exist it creates it.          */
+/* --------------------------------------------------- */
 /* --------------------------------------------------- */
 
-/* Function that checks if .txt file exists, and if it
-doesn't exist it creates it. It takes two paramaters
-1: fileName, 2: data. The file that it checks for depends
-on the fileName arg given, and it is able to write the file
-using the data arg */
-
-/* --------------------------------------------------- */
 
 
 async function writeTxtFile(fileName, data) {
@@ -198,6 +195,7 @@ async function writeTxtFile(fileName, data) {
 /*   it checks for depends on the fileName arg given,  */
 /*   and it is able to write the file using the data   */
 /*   arg.                                              */
+/* --------------------------------------------------- */
 /* --------------------------------------------------- */
 
 function writeJsonFile(fileName, data) {

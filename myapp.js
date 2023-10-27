@@ -10,6 +10,7 @@ global.DEBUG = true;
 const fs = require('fs');
 const { initApp } = require('./init.js');
 const { configApp } = require('./config.js');
+const { tokenApp } = require('./token.js')
 
 /* --------------------------------------------------- */
 /* --------------------------------------------------- */
@@ -39,7 +40,7 @@ switch (myArgs[0]) {
     // Call the tokenApp() function from token.js
     case 'token':
     case 't':
-        if (DEBUG) console.log(myArgs[0], ' --> Generate a user token.')
+        if (DEBUG) console.log(myArgs[0], 'Calling tokenApp()')
         tokenApp();
         break;
 
