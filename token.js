@@ -197,6 +197,90 @@ function newToken(username) {
 } // End of newToken()
 
 
+/* --------------------------------------------------- */
+/*                   updateToken()                     */
+/* --------------------------------------------------- */
+/*     This function updates the token.json file       */
+/*      phone number or email address for a user       */
+/*       depending on the command line arguments       */
+/*     "node myapp token --upd [p or e] [username]     */
+/*        [value]" p updates phone number and e        */
+/*               updates email address                 */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+
+
+function updateToken(myArgs) {
+
+    if (DEBUG) console.log('token.updateToken()');
+    myEmitter.emit('log', 'INFO', 'token.updateToken()', 'Calling updateToken()');
+
+    // Read the token.json file
+    fs.readFile(path.join(__dirname, 'json/token.json'), 'utf8', (error, data) => {
+
+        if (error) {
+
+            myEmitter.emit('log', 'ERROR', 'token.updateToken()', 'Error reading the token.json file. Make sure the file exists. Run: node myapp init --all');
+            console.error('Error reading the token.json file. Make sure the file exists. Run: node myapp init --all');
+        } else {
+
+            let tokens = JSON.parse(data); // Parse the JSON data so that we can loop through it
+
+            // Loop through the tokens in the token.json file
+            tokens.forEach((token) => {
+
+                if (token.username === myArgs[3]) {
+
+                    switch (myArgs[2]) {
+
+                        case 'p': // Update phone number
+                        case 'P':
+
+                            if (DEBUG) console.log('token.updateToken() [p] --> Update phone number for username: ', myArgs[3]);
+
+                            myEmitter.emit('log', 'INFO', 'token.updateToken()', `[--upd] [p] [${myArgs[3]}] [${myArgs[4]}] --> Update phone number`);
+                            
+                            token.phone = myArgs[4];
+                            break;
+                        
+                        case 'e': // Update email address
+                        case 'E':
+
+                            if (DEBUG) console.log('token.updateToken() [e] --> Update email address');
+
+                            myEmitter.emit('log', 'INFO', 'token.updateToken()', `[--upd] [e] [${myArgs[3]}] [${myArgs[4]}] --> Update email address`);
+                            token.email = myArgs[4];
+                            break;
+                        
+                        default: // Incorrect option entered
+
+                            console.log('Incorrect option entered. Try: node myapp token --upd [p or e] [username] [value]');
+                            myEmitter.emit('log', 'ERROR', 'token.updateToken()', 'Incorrect option entered. Try: node myapp token --upd [p or e] [username] [value]');
+
+                    }
+                }
+            });
+
+            // Convert the tokens array to JSON so that we can write it to the token.json file
+            userTokens = JSON.stringify(tokens, null, 2);
+
+            // Write userTokens to the token.json file
+            fs.writeFile(path.join(__dirname, 'json/token.json'), userTokens, (error) => {
+
+                if (error) { // If there is an error, display it in the console and log it to the log file
+                        
+                        myEmitter.emit('log', 'ERROR', 'token.updateToken()', error);
+                        console.error(error);
+
+                } else { // If no errors, display a success message in the console and log it to the log file
+
+                    myEmitter.emit('log', 'INFO', 'token.updateToken()', `Token record for username: ${myArgs[3]} was updated with ${myArgs[2]}: ${myArgs[4]}`);
+                    console.log(`Token record for username: ${myArgs[3]} was updated with ${myArgs[2]}: ${myArgs[4]}`);
+                }
+            })
+        }
+    })
+}
 
 /* --------------------------------------------------- */
 /*                      tokenApp()                     */
