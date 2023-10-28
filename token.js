@@ -280,7 +280,7 @@ function updateToken(myArgs) {
             })
         }
     })
-}
+} // End of updateToken()
 
 /* --------------------------------------------------- */
 /*                      tokenApp()                     */
