@@ -5,6 +5,8 @@
 /* --------------------------------------------------- */
 
 const logEvents = require('./logEvents.js'); // Load our logEvents file to use the logEvents()
+const { tokenjson } = require('./templates.js');
+const { writeJsonFile } = require('./init.js');
 
 // Add an event emitter using the events module
 const EventEmitter = require('events');
@@ -95,10 +97,10 @@ function tokenList() {
             console.log(`Token ${index + 1}: ${JSON.stringify(token, null, 2)}`);
         })
 
-        myEmitter.emit('log', 'INFO', 'token.tokenList()', 'Tokens displayed in the console successfully.');
-
+        myEmitter.emit('log', 'INFO', 'token.tokenList()', 'Tokens displayed to the console successfully.');
 
     })
+
 
     .catch((error) => {
         
@@ -106,7 +108,94 @@ function tokenList() {
         myEmitter.emit('log', 'ERROR', 'token.tokenList()', error);
     })
 
-}
+} // End of tokenList()
+
+
+/* --------------------------------------------------- */
+/*                    newToken()                      */
+/* --------------------------------------------------- */
+/*     This function generates a new token and         */
+/*      adds it to the token.json file.                */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+
+
+function newToken(username) {
+    if (DEBUG) console.log(`token.newToken() --> Generate a new token for username: "${username}"`);
+    myEmitter.emit('log', 'INFO', 'token.newToken()', `[--new] [${username}] --> Generate a new token for username: "${username}"`);
+
+    const newToken = tokenjson[0]; // Grab the first object from the template tokenjson array
+
+    let now = new Date(); // Get the current date and time
+    let expires = addDays(now, 3); // Add 3 days to the current date and time
+
+    // Set the newToken object properties
+    newToken.created = `${format(now, 'yyyy-MM-dd HH:mm:ss')}`;
+    newToken.username = username;
+    newToken.token = crc32(username).toString(16);
+    newToken.expires = `${format(expires, 'yyyy-MM-dd HH:mm:ss')}`;
+
+    fs.readFile(path.join(__dirname, 'json/token.json'), 'utf8', (error, data) => {
+
+        if (error) { // If there is an error, display it in the console and log it to the log file
+            
+            myEmitter.emit('log', 'ERROR', 'token.newToken()', error);
+            console.error('Error reading token.json file. Make sure the file exists. Run: node myapp init --all');
+
+        } else { // No errors, continue
+
+            myEmitter.emit('log', 'INFO', 'token.newToken()', 'The token.json file was read successfully.');
+
+            // Parse the JSON data so that we can loop through it
+            let tokens = JSON.parse(data);
+
+            // Loop through the tokens in the token.json file
+            
+            for (let i = 0; i < tokens.length; i++) {
+
+                // Check if the username already exists in the token.json file
+                if (tokens[i]. username === username) {
+
+                    console.log(`The username ${username} already exists in the token.json file.`);
+                    myEmitter.emit('log', 'INFO', 'token.newToken()', `The username ${username} already exists in the token.json file.`);
+
+                    // If the username already in the token.json file, return out of the function
+                    return;
+                }
+            }
+
+            // If the username is not already in the token.json file, then continue
+            
+            tokens.push(newToken); // Add the newToken object to the tokens array
+
+            // Convert the tokens array to JSON so that we can write it to the token.json file
+            let userTokens = JSON.stringify(tokens, null, 2);
+             
+
+            // Write userTokens to the token.json file
+            fs.writeFile(path.join(__dirname, 'json/token.json'), userTokens, (error) => {
+
+                if (error) { // If there is an error, display it in the console and log it to the log file
+
+                    myEmitter.emit('log', 'ERROR', 'token.newToken()', error);
+                    console.error(error);
+
+                } else { // If no errors, display a success message in the console and log it to the log file
+
+                    myEmitter.emit('log', 'INFO', 'token.newToken()', `A new token was generated for username: "${username}"`);
+                    myEmitter.emit('log', 'INFO', 'token.newToken()', 'The token was added to the token.json file successfully.');
+
+                    console.log('The token.json file was updated successfully.');
+                }
+            });
+        } 
+    });
+
+    // Return the new token code so we can use it in the web part of the app
+    return newToken.token;
+
+} // End of newToken()
+
 
 
 /* --------------------------------------------------- */
@@ -125,19 +214,49 @@ function tokenApp() {
 
     switch (myArgs[1]) {
 
+        // Display the number of tokens in the token.json file
         case '--count':
             if (DEBUG) console.log('token.tokenApp() --count');
             tokenCount();
             break;
         
+        // Display the tokens in the token.json file
         case '--list':
             if (DEBUG) console.log('token.tokenApp() --list');
             tokenList();
             break;
 
+        // Generate a new token based on the username entered
+        case '--new':
+            if (myArgs.length < 3) {
+
+                console.log('Invalid syntax. Try: node myapp token --new [username]');
+                myEmitter.emit('log', 'ERROR', 'token.tokenApp()', 'Invalid syntax. Try: node myapp token --new [username]');
+
+            } else {
+
+                if (DEBUG) console.log('token.tokenApp() --new');
+                newToken(myArgs[2]);
+            }
+            break;
 
     }
-}
+} // End of tokenApp()
 
+
+/* --------------------------------------------------- */
+/*                      addDays()                      */
+/* --------------------------------------------------- */
+/*       This function adds a number of days to        */
+/*                        a date                       */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+
+function addDays(date, days) {
+
+    let result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
 
 module.exports = { tokenApp };
