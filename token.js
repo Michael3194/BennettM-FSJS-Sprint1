@@ -240,6 +240,19 @@ function tokenApp() {
             }
             break;
 
+        case '--upd':
+            if (DEBUG) console.log('token.tokenApp() --upd');
+
+            if (myArgs.length < 5) {
+                console.log('Invalid syntax. Try: node myapp token --upd [option] [username] [value]');
+                myEmitter.emit('log', 'ERROR', 'token.tokenApp() --upd', 'Invalid syntax. Try: node myapp token --upd [option] [username] [value]');
+            } else {
+
+                updateToken(myArgs);
+            }
+
+            break;
+
     }
 } // End of tokenApp()
 
