@@ -304,4 +304,5 @@ function initApp() {
 
 module.exports = { 
     initApp,
+    writeJsonFile,
 };
