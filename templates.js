@@ -86,6 +86,45 @@ myapp token --search p <phone>          searches a token for a given phone numbe
 
 `;
 
+const indexhtml = `
+<!doctype html>
+<html>
+<body>
+    
+    <h1><a href="http://localhost:3000/new">[New Token]</a></h1>
+    <h1><a href="http://localhost:3000/count">[Token Count]</a></h1>
+
+</body>
+</html>
+`;
+
+const newtokenhtml = `
+<!doctype html>
+<html>
+<body>
+
+    <form action="/new" method="POST">
+        <input type="text" name="username" placeholder="username" />
+        <button type="submit">Create Token</button>
+    </form>
+
+</body>
+</html>
+`
+
+const counthtml = `
+<!doctype html>
+<html>
+
+<body>
+    
+    <h1><a href="http://localhost:3000">[home]</a></h1>
+
+
+</body>
+</html>
+`
+
 module.exports = {
     folders,
     configjson,
@@ -94,4 +133,7 @@ module.exports = {
     inittxt,
     configtxt,
     tokentxt,
+    indexhtml,
+    newtokenhtml,
+    counthtml
 };
