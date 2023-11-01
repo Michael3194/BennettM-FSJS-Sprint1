@@ -24,7 +24,7 @@ myEmitter.on('log', (event, level, message) => {
 })
 
 // Add what we need from our './templates.js' module
-const { folders, configjson, tokenjson, usagetxt, inittxt, configtxt, tokentxt } = require('./templates.js');
+const { folders, configjson, tokenjson, usagetxt, inittxt, configtxt, tokentxt, indexhtml, newtokenhtml, counthtml } = require('./templates.js');
 
 
 /* --------------------------------------------------- */
@@ -125,6 +125,17 @@ function createFiles() {
         // Write the token.json file
         writeJsonFile('token.json', tokenjson)
 
+        /* --------------------------------------------------- */
+        /*               Create all .html files                */
+        /* --------------------------------------------------- */
+
+        // Write the index.html file
+        writeHtmlFile('index.html', indexhtml, 'routes');
+        // Write the newtoken.html file
+        writeHtmlFile('newtoken.html', newtokenhtml, 'routes');
+        // Write the count.html file
+        writeHtmlFile('count.html', counthtml, 'routes');
+
 
 } catch (error) {
     
@@ -143,6 +154,8 @@ function createFiles() {
 /*         if it doesn't exist it creates it.          */
 /* --------------------------------------------------- */
 /* --------------------------------------------------- */
+
+
 
 
 
@@ -235,6 +248,46 @@ function writeJsonFile(fileName, data) {
         myEmitter.emit('log', 'init.createFiles()', 'INFO', `${fileName} file already exists.`);
     }
 } // End of writeJsonFile()
+
+
+/* --------------------------------------------------- */
+/*                   writeHtmlFile()                   */
+/* --------------------------------------------------- */
+/*   Function that checks if .html file exists, and    */
+/*   if it doesn't exist it creates it. It takes two   */
+/*   paramaters 1: fileName, 2: content. The file      */
+/*   that it checks for depends on the fileName arg    */
+/*   given, and it is able to write the file using     */
+/*   the content arg.                                  */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+
+async function writeHtmlFile(fileName, content, folderName) {
+    // Specify the folder path for "routes" folder or any other folder
+    const folderPath = path.join(__dirname, folderName);
+    const filePath = path.join(folderPath, fileName);
+
+    try {
+        // Check to see if the HTML file does not already exist
+        if (!fs.existsSync(filePath)) {
+            // Check to see if the folder exists first
+            if (!fs.existsSync(folderPath)) {
+                // If it does not exist, create it
+                fsPromises.mkdir(folderPath);
+            }
+
+            await fsPromises.writeFile(filePath, content);
+            console.log(`File ${fileName} written successfully.`);
+            myEmitter.emit('log', 'init.createFiles().writeHtmlFile()', 'INFO', `File ${fileName} written successfully.`);
+        } else {
+            console.log(`${fileName} file already exists.`);
+            myEmitter.emit('log', 'init.createFiles().writeHtmlFile()', 'INFO', `${fileName} file already exists.`);
+        }
+    } catch (error) {
+        console.error(`Error writing file ${fileName}:`, error);
+        myEmitter.emit('log', 'init.createFiles().writeHtmlFile()', 'ERROR', `Error writing file ${fileName}: ${error}`);
+    }
+}
 
 
 

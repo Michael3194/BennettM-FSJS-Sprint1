@@ -60,6 +60,8 @@ function tokenCount() {
         console.log(`Number of tokens: ${tokenData.length}`);
         myEmitter.emit('log', 'INFO', 'token.tokenCount()', `Number of tokens: ${tokenData.length}`);
 
+        return tokenData.length;
+
     })
 
     .catch((error) => {
@@ -67,7 +69,6 @@ function tokenCount() {
         console.error(error);
     });
 
-    return tokenData.length;
 } // End of tokenCount()
 
 
