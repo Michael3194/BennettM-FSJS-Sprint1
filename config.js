@@ -242,4 +242,4 @@ function configApp() {
 
 module.exports = {
     configApp
-}
+};

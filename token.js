@@ -191,7 +191,7 @@ function newToken(username) {
         } 
     });
 
-    // Return the new token code so we can use it in the web part of the app
+    // Return the new token number so we can use it in the web part of the app
     return newToken.token;
 
 } // End of newToken()
@@ -226,11 +226,13 @@ function updateToken(myArgs) {
 
             let tokens = JSON.parse(data); // Parse the JSON data so that we can loop through it
 
+            let found = false; // Set found to false
+
             // Loop through the tokens in the token.json file
             tokens.forEach((token) => {
 
                 if (token.username === myArgs[3]) {
-
+                    found = true; // If the username is found, set found to true
                     switch (myArgs[2]) {
 
                         case 'p': // Update phone number
@@ -261,6 +263,14 @@ function updateToken(myArgs) {
                 }
             });
 
+            if (!found) {
+                    
+                    console.log(`The username ${myArgs[3]} was not found in the token.json file.`);
+                    myEmitter.emit('log', 'INFO', 'token.updateToken()', `The username ${myArgs[3]} was not found in the token.json file.`);
+                    return;
+
+            } else {
+
             // Convert the tokens array to JSON so that we can write it to the token.json file
             userTokens = JSON.stringify(tokens, null, 2);
 
@@ -278,6 +288,7 @@ function updateToken(myArgs) {
                     console.log(`Token record for username: ${myArgs[3]} was updated with ${myArgs[2]}: ${myArgs[4]}`);
                 }
             })
+            }
         }
     })
 } // End of updateToken()
