@@ -295,6 +295,100 @@ function updateToken(myArgs) {
     })
 } // End of updateToken()
 
+
+function searchToken(myArgs) {
+
+    if (DEBUG) console.log('token.searchToken()');
+
+    myEmitter.emit('log', 'INFO', 'token.searchToken()', 'Calling searchToken()');
+
+    if (myArgs.length < 4) {
+            
+            console.log('Invalid syntax. Try: node myapp token --search [username]');
+            myEmitter.emit('log', 'ERROR', 'token.searchToken()', 'Invalid syntax. Try: node myapp token --search [u,e or p] [username, email or phone number]');
+
+            return;
+    }
+
+    // Read the token.json file
+    fs.readFile(path.join(__dirname, 'json/token.json'), 'utf8', (error, data) => {
+
+        if (error) {
+                
+            console.error(error);
+            myEmitter.emit('log', 'ERROR', 'token.searchToken()', error);
+                
+        } else {
+
+            let tokens = JSON.parse(data); // Parse the JSON data
+
+            let found = false; // Set found to false
+
+            // Loop through the tokens in the token.json file
+            tokens.forEach((token) => {
+
+                switch (myArgs[2]) {
+
+                    case 'u': // Search for username
+                        if (token.username === myArgs[3]) {
+
+                            myEmitter.emit('log', 'INFO', 'token.searchToken()', `Token found for username: ${myArgs[3]}`);
+                            found = true; // If the username is found, set found to true
+
+                            displayToken(token);
+                        }
+                        break;
+                    
+                    case 'e': // Search for email address
+                        if (token.email === myArgs[3]) {
+
+                            myEmitter.emit('log', 'INFO', 'token.searchToken()', `Token found for email address: ${myArgs[3]}`);
+                            found = true; // If the email address is found, set found to true
+
+                            displayToken(token);
+                        }
+                        break;
+
+                    case 'p': // Search for phone number
+                        if (token.phone === myArgs[3]) {
+                            myEmitter.emit('log', 'INFO', 'token.searchToken()', `Token found for phone number: ${myArgs[3]}`);
+
+                            found = true; // If the phone number is found, set found to true
+
+                            displayToken(token);
+                        }
+                        break;
+
+                    default: // Incorrect option entered
+                        
+                        console.log('Incorrect option entered. Try: node myapp token --search [u,e or p] [username, email or phone number]');
+
+                        myEmitter.emit('log', 'ERROR', 'token.searchToken()', 'Incorrect option entered. Try: node myapp token --search [u,e or p] [username, email or phone number]');
+
+                }
+            });
+
+            if (!found) {
+
+                console.log(`The ${myArgs[2]}: ${myArgs[3]} was not found in the token.json file.`);
+                myEmitter.emit('log', 'INFO', 'token.searchToken()', `The ${myArgs[2]}: ${myArgs[3]} was not found in the token.json file.`);
+            
+            }
+        }
+    })
+}
+
+function displayToken(token) {
+
+    if (DEBUG) console.log('token.displayToken()');
+    myEmitter.emit('log', 'INFO', 'token.displayToken()', `Displayed token for username: ${token.username} successfully.`);
+
+    console.log(`Token found:`)
+    console.log(JSON.stringify(token, null, 2));
+
+    return token;
+}
+
 /* --------------------------------------------------- */
 /*                      tokenApp()                     */
 /* --------------------------------------------------- */
@@ -313,12 +407,15 @@ function tokenApp() {
 
         // Display the number of tokens in the token.json file
         case '--count':
+
+            myEmitter.emit('log', 'INFO', 'token.tokenApp()', 'Calling token.tokenApp() --count');
             if (DEBUG) console.log('token.tokenApp() --count');
             tokenCount();
             break;
         
         // Display the tokens in the token.json file
         case '--list':
+            myEmitter.emit('log', 'INFO', 'token.tokenApp()', 'Calling token.tokenApp() --list');
             if (DEBUG) console.log('token.tokenApp() --list');
             tokenList();
             break;
@@ -326,11 +423,12 @@ function tokenApp() {
         // Generate a new token based on the username entered
         case '--new':
             if (myArgs.length < 3) {
-
+                
                 console.log('Invalid syntax. Try: node myapp token --new [username]');
                 myEmitter.emit('log', 'ERROR', 'token.tokenApp()', 'Invalid syntax. Try: node myapp token --new [username]');
 
             } else {
+                myEmitter.emit('log', 'INFO', 'token.tokenApp()', `Calling token.tokenApp() --new [${myArgs[2]}]`);
 
                 if (DEBUG) console.log('token.tokenApp() --new');
                 newToken(myArgs[2]);
@@ -339,6 +437,7 @@ function tokenApp() {
 
         case '--upd':
             if (DEBUG) console.log('token.tokenApp() --upd');
+            myEmitter.emit('log', 'INFO', 'token.tokenApp()', 'Calling token.tokenApp() --upd');
 
             if (myArgs.length < 5) {
                 console.log('Invalid syntax. Try: node myapp token --upd [option] [username] [value]');
@@ -350,6 +449,32 @@ function tokenApp() {
 
             break;
 
+        case '--search':
+            if (DEBUG) console.log('token.tokenApp() --search');
+            searchToken(myArgs);
+            break;
+
+        case '--help':
+        case '--h':
+        default:
+
+            if (DEBUG) console.log('token.tokenApp() --help');
+
+            myEmitter.emit('log', 'INFO', 'token.tokenApp()', 'Display the usage.txt file.');
+
+            // Read the token.txt file
+            fs.readFile(path.join(__dirname + 'views/token.txt'), 'utf8', (error, data) => {
+
+                if (error) {
+                    // Error reading the token.txt file
+                    myEmitter.emit('log', 'ERROR', 'token.tokenApp()', error);
+                    console.error(error);
+
+                } else {
+                    // Display the token.txt file
+                    console.log(data.toString());
+                }
+            })
     }
 } // End of tokenApp()
 
