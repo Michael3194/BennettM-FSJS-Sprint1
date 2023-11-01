@@ -367,4 +367,8 @@ function addDays(date, days) {
     return result;
 }
 
-module.exports = { tokenApp };
+module.exports = { 
+    tokenApp,
+    newToken,
+    tokenCount
+};
