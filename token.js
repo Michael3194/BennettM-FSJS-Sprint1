@@ -66,6 +66,8 @@ function tokenCount() {
         myEmitter.emit('log', 'ERROR', 'tokenCount()', error);
         console.error(error);
     });
+
+    return tokenData.length;
 } // End of tokenCount()
 
 
