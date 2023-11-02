@@ -45,31 +45,28 @@ const myArgs = process.argv.slice(2);
 /* --------------------------------------------------- */
 
 function tokenCount() {
-
     if (DEBUG) console.log('token.tokenCount() --> Display the number of tokens in the token.json file.');
     myEmitter.emit('log', 'INFO', 'token.tokenCount()', '[--count] Display the number of tokens in the token.json file.');
 
     // Read the token.json file
-    fsPromises.readFile(path.join(__dirname, 'json/token.json'), 'utf8')
-    .then((data) => {
+    return fsPromises.readFile(path.join(__dirname, 'json/token.json'), 'utf8')
+        .then((data) => {
+            // Parse the JSON data
+            const tokenData = JSON.parse(data);
 
-        // Parse the JSON data
-        const tokenData = JSON.parse(data);
+            // Display the number of tokens
+            const count = tokenData.length;
+            console.log(`Number of tokens: ${count}`);
+            myEmitter.emit('log', 'INFO', 'token.tokenCount()', `Number of tokens: ${count}`);
 
-        // Display the number of tokens
-        console.log(`Number of tokens: ${tokenData.length}`);
-        myEmitter.emit('log', 'INFO', 'token.tokenCount()', `Number of tokens: ${tokenData.length}`);
-
-        return tokenData.length;
-
-    })
-
-    .catch((error) => {
-        myEmitter.emit('log', 'ERROR', 'tokenCount()', error);
-        console.error(error);
-    });
-
-} // End of tokenCount()
+            return count;
+        })
+        .catch((error) => {
+            myEmitter.emit('log', 'ERROR', 'tokenCount()', error);
+            console.error(error);
+            throw error; // Rethrow the error if needed
+        });
+}// End of tokenCount()
 
 
 /* --------------------------------------------------- */
