@@ -1,4 +1,7 @@
+// File: myapp.js
 // File Created: 2023-10-22
+// Author: Michael Bennett
+
 
 global.DEBUG = true;
 

@@ -1,3 +1,8 @@
+// File: server.js
+// File Created: 2023-11-01
+// Author: Michael Bennett
+
+
 global.DEBUG = true;
 
 const http = require('http');

@@ -1,4 +1,7 @@
+// File: logEvents.js
 // File Created: 2023-10-22
+// Author: Michael Bennett
+
 
 /* --- NPM Installed Modules --- */
 const { format, getYear } = require('date-fns'); // Used to format the date and time.

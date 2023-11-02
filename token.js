@@ -1,4 +1,7 @@
+// File: token.js
 // File Created: 2023-10-27
+// Author: Michael Bennett
+
 
 /* --------------------------------------------------- */
 /*              Load all needed modules                */

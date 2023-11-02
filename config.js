@@ -1,6 +1,6 @@
+// File: config.js
 // File Created: 2023-10-26
-
-
+// Author: Michael Bennett
 
 /* --------------------------------------------------- */
 /*              Load all needed modules                */
